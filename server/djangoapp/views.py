@@ -20,7 +20,7 @@ def login_user(request):
     username = data['userName']
     password = data['password']
     # Try to check if provide credential can be authenticated
-    user = authenticate(username = username, password = password)
+    user = authenticate(username=username, password=password)
     data = {"userName": username}
     if user is not None:
         # If user is valid, call login method to login current user
@@ -31,8 +31,8 @@ def login_user(request):
 
 # Create a `logout_request` view to handle sign out request
 def logout_request(request):
-    logout(request) # Terminate user session
-    data = {"userName": " "} # Return empty username
+    logout(request)   # Terminate user session
+    data = {"userName": " "}   # Return empty username
     return JsonResponse(data)
 
 
@@ -58,11 +58,11 @@ def registration(request):
     if not username_exist:
         # Create user in auth_user table
         user = User.objects.create_user(
-            username = username,
-            first_name = first_name,
-            last_name = last_name,
-            password = password,
-            email = email
+            username=username,
+            first_name=first_name,
+            last_name=last_name,
+            password=password,
+            email=email
             )
         # Login the user and redirect to list page
         login(request, user)
@@ -126,12 +126,13 @@ def get_dealer_details(request, dealer_id):
 
 
 def add_review(request):
-    if (request.user.is_anonymous == False):
+    if (request.user.is_anonymous is False):
         data = json.loads(request.body)
         try:
-            response = post_review(data)
+            post_review(data)
             return JsonResponse({"status": 200})
-        except:
-            return JsonResponse({"status": 401, "message": "Error in posting review"})
+        except Exception as err:
+            return JsonResponse({"status": 401,
+                                 "message": f"Error in posting review: {err}"})
     else:
         return JsonResponse({"status": 403, "message": "Unauthorized"})
